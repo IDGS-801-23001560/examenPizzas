@@ -1,0 +1,72 @@
+{% extends "layout.html" %}
+
+{% block container %}
+<div class="max-w-4xl mx-auto px-4 py-8">
+    
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold text-heading">Detalles del Pedido <span class="text-brand-medium">#{{ pedido.id_pedido }}</span></h1>
+        
+        <button onclick="history.back()" class="text-body bg-white hover:bg-neutral-100 focus:ring-4 focus:outline-none focus:ring-gray-100 rounded-lg shadow-sm border border-gray-200 text-sm font-medium px-5 py-2.5 transition-colors">
+            ← Regresar
+        </button>
+    </div>
+
+    <div class="bg-white p-8 rounded-lg shadow-md border border-gray-200">
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 border-b border-gray-200 pb-6 mb-6">
+            <div>
+                <h3 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-2">Datos del Cliente</h3>
+                <p class="text-lg font-semibold text-heading">{{ pedido.cliente.nombre }}</p>
+                <p class="text-body">{{ pedido.cliente.direccion }}</p>
+                <p class="text-body flex items-center mt-1">
+                    <svg class="w-4 h-4 mr-2 text-gray-400" fill="currentColor" viewBox="0 0 20 20"><path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"></path></svg>
+                    {{ pedido.cliente.telefono }}
+                </p>
+            </div>
+            <div class="md:text-right">
+                <h3 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-2">Información de Compra</h3>
+                <p class="text-body"><span class="font-medium text-heading">Fecha:</span> {{ pedido.fecha.strftime('%d/%m/%Y') }}</p>
+                <p class="text-body mt-1"><span class="font-medium text-heading">Folio:</span> {{ pedido.id_pedido }}</p>
+            </div>
+        </div>
+
+        <h3 class="text-lg font-semibold mb-4 text-heading">Pizzas Incluidas</h3>
+        <div class="relative overflow-x-auto border border-gray-200 rounded-lg mb-6">
+            <table class="w-full text-sm text-left text-body">
+                <thead class="bg-neutral-primary-soft border-b border-gray-200">
+                    <tr>
+                        <th class="px-6 py-3 font-medium">Tamaño</th>
+                        <th class="px-6 py-3 font-medium">Ingredientes</th>
+                        <th class="px-6 py-3 font-medium text-center">Cantidad</th>
+                        <th class="px-6 py-3 font-medium text-right">Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for detalle in pedido.detalles %}
+                    <tr class="bg-white border-b hover:bg-neutral-primary-soft transition-colors">
+                        <td class="px-6 py-4 font-medium text-heading">{{ detalle.pizza_info.tamano }}</td>
+                        <td class="px-6 py-4 text-gray-500">{{ detalle.pizza_info.ingredientes }}</td>
+                        <td class="px-6 py-4 text-center">{{ detalle.cantidad }}</td>
+                        <td class="px-6 py-4 text-right font-medium">${{ "%.2f"|format(detalle.subtotal) }}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="4" class="px-6 py-4 text-center text-gray-500">No hay detalles registrados para este pedido.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="flex justify-end">
+            <div class="bg-neutral-primary-soft p-4 rounded-lg border border-gray-200 min-w-[250px]">
+                <div class="flex justify-between items-center">
+                    <span class="text-lg font-bold text-heading">Total Pagado:</span>
+                    <span class="text-2xl font-bold text-brand-strong">${{ "%.2f"|format(pedido.total) }}</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

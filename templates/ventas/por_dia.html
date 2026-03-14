@@ -1,0 +1,67 @@
+{% extends "layout.html" %}
+
+{% block container %}
+<div class="max-w-5xl mx-auto px-4 py-8">
+    
+    <h1 class="text-3xl font-bold mb-6 text-heading text-center">Reporte de Ventas por Día</h1>
+
+    <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 mb-8 max-w-xl mx-auto">
+        <form method="POST" action="" class="flex flex-col sm:flex-row gap-4 items-end">
+            {{ form.hidden_tag() }}
+            <div class="w-full">
+                {{ form.dia.label(class="block mb-2 text-sm font-medium text-heading") }}
+                {{ form.dia(class="bg-neutral-primary-soft border border-gray-300 text-body text-sm rounded-lg focus:ring-brand-medium focus:border-brand-medium block w-full p-2.5") }}
+            </div>
+            <div class="w-full sm:w-auto">
+                {{ form.buscar(class="w-full text-white bg-brand hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium font-medium rounded-lg text-sm px-5 py-2.5 transition-colors cursor-pointer whitespace-nowrap") }}
+            </div>
+        </form>
+    </div>
+
+    {% if parametro %}
+        <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+            <h2 class="text-xl font-semibold mb-4 text-heading border-b pb-2">Resultados para: <span class="text-brand-medium">{{ parametro }}</span></h2>
+            
+            <div class="relative overflow-x-auto border border-gray-200 rounded-lg">
+                <table class="w-full text-sm text-left text-body">
+                    <thead class="bg-neutral-primary-soft border-b border-gray-200">
+                        <tr>
+                            <th class="px-6 py-3 font-medium">Folio Pedido</th>
+                            <th class="px-6 py-3 font-medium">Fecha</th>
+                            <th class="px-6 py-3 font-medium">Cliente</th>
+                            <th class="px-6 py-3 font-medium text-right">Total</th>
+                            <th class="px-6 py-3 font-medium text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for venta in ventas %}
+                        <tr class="bg-white border-b hover:bg-neutral-primary-soft transition-colors">
+                            <td class="px-6 py-4 font-medium text-heading"># {{ venta.id_pedido }}</td>
+                            <td class="px-6 py-4">{{ venta.fecha.strftime('%d/%m/%Y') }}</td>
+                            <td class="px-6 py-4">{{ venta.cliente.nombre }}</td>
+                            <td class="px-6 py-4 text-right font-bold text-heading">${{ "%.2f"|format(venta.total) }}</td>
+                            <td class="px-6 py-4 text-center">
+                                <a href="{{ url_for('ventas.detalles', id=venta.id_pedido) }}" class="font-medium text-brand-medium hover:underline">Ver Detalles</a>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5" class="px-6 py-8 text-center text-gray-500">No hay ventas registradas en este día.</td>
+                        </tr>
+                        {% endfor %}
+                        
+                        {% if ventas %}
+                        <tr class="bg-neutral-secondary-soft">
+                            <td colspan="3" class="px-6 py-4 text-right font-bold text-heading">Total Acumulado del Día:</td>
+                            <td class="px-6 py-4 text-right font-bold text-green-600 text-lg">${{ "%.2f"|format(total) }}</td>
+                            <td></td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% endif %}
+
+</div>
+{% endblock %}
